@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#041e42" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta
+      name="description"
+      content="Sistema Scania de controle de estoque, entradas, saídas e alertas para o almoxarifado predial."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Almox Predial | Scania" />
+    <meta
+      property="og:description"
+      content="Materiais certos. Operação em movimento."
+    />
+    <meta property="og:image" content="assets/og-scania.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Almox Predial | Scania</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">AP</span>
+          <span>
+            <strong>Almox Predial</strong>
+            <small>Scania · Operações</small>
+          </span>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item is-active" data-view="dashboard" type="button">
+            <span class="nav-icon" aria-hidden="true">01</span>
+            Visão geral
+          </button>
+          <button class="nav-item" data-view="items" type="button">
+            <span class="nav-icon" aria-hidden="true">02</span>
+            Estoque
+          </button>
+          <button class="nav-item" data-view="movements" type="button">
+            <span class="nav-icon" aria-hidden="true">03</span>
+            Movimentações
+          </button>
+          <button class="nav-item" data-view="reports" type="button">
+            <span class="nav-icon" aria-hidden="true">04</span>
+            Relatórios
+          </button>
+          <button class="nav-item" data-view="settings" type="button">
+            <span class="nav-icon" aria-hidden="true">05</span>
+            Configurações
+          </button>
+        </nav>
+
+        <div class="sidebar-foot">
+          <div class="storage-badge">
+            <span class="status-dot" id="connectionDot"></span>
+            <span>
+              <small>Armazenamento</small>
+              <strong id="connectionLabel">Inicializando…</strong>
+            </span>
+          </div>
+          <p>Uso interno · Scania</p>
+        </div>
+      </aside>
+
+      <div class="sidebar-scrim" id="sidebarScrim"></div>
+
+      <div class="workspace">
+        <header class="topbar">
+          <div class="topbar-start">
+            <button class="icon-button mobile-only" id="menuButton" type="button" aria-label="Abrir menu">☰</button>
+            <div>
+              <span class="eyebrow" id="viewEyebrow">Painel operacional</span>
+              <h1 id="viewTitle">Visão geral</h1>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <span class="today-label" id="todayLabel"></span>
+            <button class="icon-button" id="themeButton" type="button" aria-label="Alternar tema">◐</button>
+            <button class="button button-primary" id="quickAddItem" type="button">+ Novo item</button>
+          </div>
+        </header>
+
+        <main class="main-content">
+          <section class="view is-active" id="dashboardView" data-view-panel="dashboard">
+            <div class="hero-panel">
+              <div class="hero-copy">
+                <span class="hero-kicker">OPERAÇÕES PREDIAIS</span>
+                <h2>Materiais certos.<br />Operação em movimento.</h2>
+                <p>Controle o estoque, identifique prioridades e registre movimentações com clareza.</p>
+              </div>
+              <div class="hero-actions">
+                <button class="button button-light" id="heroMovementButton" type="button">Registrar movimentação</button>
+                <span id="heroSummary">Carregando resumo…</span>
+              </div>
+            </div>
+
+            <div class="stat-grid">
+              <article class="stat-card stat-card-accent">
+                <div class="stat-head"><span>Valor em estoque</span><span class="trend-chip">Atual</span></div>
+                <strong id="statValue">R$ 0,00</strong>
+                <small>Custo total estimado</small>
+              </article>
+              <article class="stat-card">
+                <div class="stat-head"><span>Itens cadastrados</span><span class="stat-index">01</span></div>
+                <strong id="statItems">0</strong>
+                <small id="statUnits">0 unidades armazenadas</small>
+              </article>
+              <article class="stat-card warning-card">
+                <div class="stat-head"><span>Estoque baixo</span><span class="stat-index">02</span></div>
+                <strong id="statLow">0</strong>
+                <small>Itens pedindo reposição</small>
+              </article>
+              <article class="stat-card">
+                <div class="stat-head"><span>Movimentações</span><span class="stat-index">03</span></div>
+                <strong id="statMoves">0</strong>
+                <small>Registradas neste mês</small>
+              </article>
+            </div>
+
+            <div class="dashboard-grid">
+              <article class="panel health-panel">
+                <div class="panel-heading">
+                  <div><span class="eyebrow">Leitura rápida</span><h3>Saúde do estoque</h3></div>
+                  <span class="panel-note">Agora</span>
+                </div>
+                <div class="health-content">
+                  <div class="donut" id="healthDonut" style="--value: 0">
+                    <div><strong id="healthPercent">0%</strong><span>saudável</span></div>
+                  </div>
+                  <div class="health-legend">
+                    <div><span class="legend-dot healthy"></span><span>Normal</span><strong id="healthyCount">0</strong></div>
+                    <div><span class="legend-dot low"></span><span>Baixo</span><strong id="lowCount">0</strong></div>
+                    <div><span class="legend-dot empty"></span><span>Esgotado</span><strong id="emptyCount">0</strong></div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="panel category-panel">
+                <div class="panel-heading">
+                  <div><span class="eyebrow">Distribuição</span><h3>Estoque por categoria</h3></div>
+                  <button class="text-button" data-go-view="items" type="button">Ver itens →</button>
+                </div>
+                <div class="category-bars" id="categoryBars"></div>
+              </article>
+            </div>
+
+            <div class="dashboard-grid dashboard-grid-bottom">
+              <article class="panel alerts-panel">
+                <div class="panel-heading">
+                  <div><span class="eyebrow">Atenção</span><h3>Reposição necessária</h3></div>
+                  <span class="alert-count" id="alertCount">0</span>
+                </div>
+                <div class="stack-list" id="lowStockList"></div>
+              </article>
+
+              <article class="panel recent-panel">
+                <div class="panel-heading">
+                  <div><span class="eyebrow">Rastreabilidade</span><h3>Últimas movimentações</h3></div>
+                  <button class="text-button" data-go-view="movements" type="button">Ver histórico →</button>
+                </div>
+                <div class="stack-list" id="recentMovements"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="itemsView" data-view-panel="items">
+            <div class="section-intro">
+              <div><span class="eyebrow">Inventário completo</span><h2>Itens em estoque</h2><p>Localize, filtre e atualize todos os materiais do almoxarifado.</p></div>
+              <button class="button button-primary" id="addItemButton" type="button">+ Cadastrar item</button>
+            </div>
+            <div class="toolbar panel">
+              <label class="search-field">
+                <span class="sr-only">Buscar item</span>
+                <span aria-hidden="true">⌕</span>
+                <input id="itemSearch" type="search" placeholder="Buscar por nome, código ou local…" />
+              </label>
+              <select id="categoryFilter" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select>
+              <select id="stockFilter" aria-label="Filtrar por nível de estoque">
+                <option value="">Todos os níveis</option>
+                <option value="healthy">Estoque normal</option>
+                <option value="low">Estoque baixo</option>
+                <option value="empty">Esgotado</option>
+              </select>
+              <button class="button button-secondary" id="exportCsvButton" type="button">Exportar CSV</button>
+            </div>
+            <div class="table-card panel">
+              <div class="table-scroll">
+                <table>
+                  <thead><tr><th>Item</th><th>Categoria</th><th>Localização</th><th>Quantidade</th><th>Situação</th><th aria-label="Ações"></th></tr></thead>
+                  <tbody id="itemsTableBody"></tbody>
+                </table>
+              </div>
+              <div class="table-footer"><span id="itemsTableCount">0 itens</span><span>Dados atualizados automaticamente</span></div>
+            </div>
+          </section>
+
+          <section class="view" id="movementsView" data-view-panel="movements">
+            <div class="section-intro">
+              <div><span class="eyebrow">Fluxo de materiais</span><h2>Movimentações</h2><p>Registre entradas e saídas com histórico completo.</p></div>
+            </div>
+            <div class="movement-layout">
+              <form class="panel movement-form" id="movementForm">
+                <div class="panel-heading"><div><span class="eyebrow">Novo registro</span><h3>Registrar movimentação</h3></div></div>
+                <fieldset class="segmented-control">
+                  <legend class="sr-only">Tipo de movimentação</legend>
+                  <label><input type="radio" name="movementType" value="in" checked /><span>Entrada</span></label>
+                  <label><input type="radio" name="movementType" value="out" /><span>Saída</span></label>
+                </fieldset>
+                <label class="field"><span>Item *</span><select id="movementItem" required><option value="">Selecione um item</option></select></label>
+                <div class="form-row">
+                  <label class="field"><span>Quantidade *</span><input id="movementQuantity" type="number" min="0.01" step="0.01" required placeholder="0" /></label>
+                  <label class="field"><span>Documento</span><input id="movementDocument" type="text" maxlength="50" placeholder="NF, OS ou requisição" /></label>
+                </div>
+                <label class="field"><span>Solicitante / responsável</span><input id="movementRequester" type="text" maxlength="100" placeholder="Nome da pessoa ou setor" /></label>
+                <label class="field"><span>Observação</span><textarea id="movementNote" rows="3" maxlength="300" placeholder="Detalhes adicionais…"></textarea></label>
+                <div class="selected-stock" id="selectedStock">Selecione um item para ver o saldo disponível.</div>
+                <button class="button button-primary button-full" type="submit">Confirmar movimentação</button>
+              </form>
+
+              <article class="panel movement-history">
+                <div class="panel-heading">
+                  <div><span class="eyebrow">Linha do tempo</span><h3>Histórico</h3></div>
+                  <select id="movementTypeFilter" aria-label="Filtrar histórico"><option value="">Todas</option><option value="in">Entradas</option><option value="out">Saídas</option></select>
+                </div>
+                <div class="timeline" id="movementTimeline"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="reportsView" data-view-panel="reports">
+            <div class="section-intro">
+              <div><span class="eyebrow">Indicadores</span><h2>Relatórios</h2><p>Entenda consumo, valor e necessidades de compra.</p></div>
+              <button class="button button-secondary" id="printReportButton" type="button">Imprimir relatório</button>
+            </div>
+            <div class="report-highlights" id="reportHighlights"></div>
+            <div class="report-grid">
+              <article class="panel">
+                <div class="panel-heading"><div><span class="eyebrow">Posição atual</span><h3>Resumo por categoria</h3></div></div>
+                <div class="table-scroll"><table><thead><tr><th>Categoria</th><th>Itens</th><th>Unidades</th><th>Valor</th></tr></thead><tbody id="categoryReportBody"></tbody></table></div>
+              </article>
+              <article class="panel">
+                <div class="panel-heading"><div><span class="eyebrow">Últimos 30 dias</span><h3>Entradas x saídas</h3></div></div>
+                <div class="comparison-chart" id="movementComparison"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="settingsView" data-view-panel="settings">
+            <div class="section-intro">
+              <div><span class="eyebrow">Administração</span><h2>Configurações</h2><p>Gerencie banco de dados, segurança e cópias dos registros.</p></div>
+            </div>
+            <div class="settings-grid">
+              <article class="panel settings-card">
+                <div class="settings-icon">DB</div>
+                <div><span class="eyebrow">Banco de dados</span><h3 id="databaseModeTitle">Modo local</h3><p id="databaseModeText">Os dados ficam salvos neste navegador.</p><a class="text-link" href="README.md#2-conectar-o-banco-compartilhado-supabase" target="_blank">Ver como conectar o Supabase →</a><button class="text-button danger-text hidden" id="logoutButton" type="button">Sair da conta</button></div>
+              </article>
+              <article class="panel settings-card">
+                <div class="settings-icon">BK</div>
+                <div><span class="eyebrow">Segurança dos dados</span><h3>Backup e restauração</h3><p>Exporte todos os itens e movimentações para um arquivo JSON.</p><div class="inline-actions"><button class="button button-secondary" id="backupButton" type="button">Baixar backup</button><label class="button button-ghost file-button">Restaurar<input id="restoreInput" type="file" accept="application/json" /></label></div></div>
+              </article>
+              <article class="panel settings-card danger-settings">
+                <div class="settings-icon">↺</div>
+                <div><span class="eyebrow">Ambiente de teste</span><h3>Restaurar dados iniciais</h3><p>Apaga os dados locais atuais e recarrega a demonstração.</p><button class="text-button danger-text" id="resetButton" type="button">Restaurar demonstração</button></div>
+              </article>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <dialog class="modal" id="itemModal">
+      <form class="modal-card" id="itemForm">
+        <div class="modal-head">
+          <div><span class="eyebrow">Cadastro de estoque</span><h2 id="itemModalTitle">Novo item</h2></div>
+          <button class="icon-button" id="closeItemModal" type="button" aria-label="Fechar">×</button>
+        </div>
+        <input id="itemId" type="hidden" />
+        <div class="form-row">
+          <label class="field field-grow"><span>Nome do item *</span><input id="itemName" type="text" maxlength="120" required placeholder="Ex.: Lâmpada LED 12W" /></label>
+          <label class="field field-code"><span>Código *</span><input id="itemCode" type="text" maxlength="30" required placeholder="ELE-001" /></label>
+        </div>
+        <div class="form-row form-row-thirds">
+          <label class="field"><span>Categoria *</span><input id="itemCategory" type="text" list="categorySuggestions" maxlength="60" required placeholder="Elétrica" /></label>
+          <label class="field"><span>Unidade *</span><select id="itemUnit" required><option value="un">Unidade (un)</option><option value="cx">Caixa (cx)</option><option value="pct">Pacote (pct)</option><option value="par">Par (par)</option><option value="gl">Galão (gl)</option><option value="m">Metro (m)</option><option value="kg">Quilo (kg)</option><option value="l">Litro (l)</option></select></label>
+          <label class="field"><span>Localização *</span><input id="itemLocation" type="text" maxlength="60" required placeholder="Prateleira A-01" /></label>
+        </div>
+        <datalist id="categorySuggestions"><option value="Elétrica"></option><option value="Hidráulica"></option><option value="Limpeza"></option><option value="Ferramentas"></option><option value="Pintura"></option><option value="EPI"></option></datalist>
+        <div class="form-row form-row-thirds">
+          <label class="field"><span>Estoque atual *</span><input id="itemCurrentStock" type="number" min="0" step="0.01" required value="0" /></label>
+          <label class="field"><span>Estoque mínimo *</span><input id="itemMinStock" type="number" min="0" step="0.01" required value="0" /></label>
+          <label class="field"><span>Custo unitário</span><input id="itemUnitCost" type="number" min="0" step="0.01" value="0" /></label>
+        </div>
+        <div class="form-row">
+          <label class="field"><span>Fornecedor</span><input id="itemSupplier" type="text" maxlength="100" placeholder="Fornecedor principal" /></label>
+          <label class="field"><span>Observação</span><input id="itemNotes" type="text" maxlength="200" placeholder="Marca, especificação…" /></label>
+        </div>
+        <div class="modal-actions"><button class="button button-ghost" id="cancelItemButton" type="button">Cancelar</button><button class="button button-primary" id="saveItemButton" type="submit">Salvar item</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="modal auth-modal" id="authModal">
+      <form class="modal-card auth-card" id="authForm">
+        <span class="brand-mark auth-mark" aria-hidden="true">AP</span>
+        <span class="eyebrow">Acesso seguro</span>
+        <h2>Entrar no Almox Predial</h2>
+        <p>Use o usuário criado no painel do Supabase.</p>
+        <label class="field"><span>E-mail</span><input id="authEmail" type="email" autocomplete="email" required /></label>
+        <label class="field"><span>Senha</span><input id="authPassword" type="password" autocomplete="current-password" required /></label>
+        <p class="form-error" id="authError" role="alert"></p>
+        <button class="button button-primary button-full" type="submit">Entrar</button>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
